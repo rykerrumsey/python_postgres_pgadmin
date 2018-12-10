@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+  api:
+    build: api/.
+    ports:
+      - "5000:5000"
+    networks:
+      - postgres
+  postgres:
+    env_file: postgres.env
+    build: postgres/.
+    image: custom_postgres
+    volumes:
+      - "db:/var/lib/postgresql/data"
+    networks:
+      - pgadmin
+      - postgres
+  pgadmin:
+    env_file: pgadmin.env
+    image: "dpage/pgadmin4"
+    ports:
+      - "5001:80"
+    volumes:
+      - "pgadmin_settings:/var/lib/pgadmin"
+      - "pgadmin_files:/files"
+    networks:
+      - pgadmin
+    logging:
+      driver: "none"
+
+volumes:
+  db:
+  pgadmin_files:
+  pgadmin_settings:
+
+networks:
+  postgres:
+  pgadmin:

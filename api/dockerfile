@@ -1,0 +1,21 @@
+FROM python:3.7-alpine3.8
+
+COPY . /server
+WORKDIR /server
+
+#install pipenv
+RUN pip install pipenv
+
+#install deps for psycopg2
+RUN apk add --no-cache --virtual .build-deps \
+    gcc \
+    python3-dev \
+    musl-dev \
+    postgresql-dev
+
+#install dependencies
+RUN pipenv install --system --deploy
+#RUN apk del --no-cache .build-deps
+
+#install application
+CMD ["python", "./src/server.py"]
